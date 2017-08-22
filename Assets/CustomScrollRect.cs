@@ -45,7 +45,7 @@ namespace Oslobw.UI.Foundation
                 return;
             }
             
-            m_contentMoveTarget = Content.position;
+            m_contentMoveTarget = Content.localPosition;
             m_grid = Content.GetComponent<GridLayoutGroup>();
             m_quickGrid = new QuickGrid(GetComponent<RectTransform>(), m_grid);
 
@@ -93,12 +93,13 @@ namespace Oslobw.UI.Foundation
                     }
                 }
 
+                m_quickGrid.CheckBounds(Orientation, ref m_contentMoveTarget);
                 m_lastMousePos = m_curMousePos;
             }
 
             Move();
         }
-
+        
         void Move()
         {
             if (!m_startMove)
@@ -149,6 +150,10 @@ namespace Oslobw.UI.Foundation
         {
             yield return new WaitForSeconds(0.3f);
             m_grid.enabled = false;
+            if(!m_quickGrid.CheckBounds(Orientation, ref m_contentMoveTarget))
+            {
+                m_startMove = true;
+            }
         }
     }
 }
